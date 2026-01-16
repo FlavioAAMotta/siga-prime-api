@@ -9,8 +9,9 @@ export const parseQueryParams = (query: any): QueryParams => {
         } else if (key === "limit") {
             params.limit = Number(value);
         } else if (key === "order") {
-            const [column, dir] = (value as string).split(" ");
-            params.order = { column, dir: dir.toLowerCase() as "asc" | "desc" };
+            const separator = (value as string).includes(":") ? ":" : " ";
+            const [column, dir] = (value as string).split(separator);
+            params.order = { column, dir: dir ? (dir.toLowerCase() as "asc" | "desc") : "asc" };
         } else if (key.startsWith("gte_")) {
             params.rangeFilters = params.rangeFilters || [];
             params.rangeFilters.push({ column: key.replace("gte_", ""), operator: ">=", value });
