@@ -8,10 +8,15 @@ import apiRouter from "./routes/apiRouter";
 import userRouter from "./routes/userRouter";
 import instituicaoRouter from "./routes/instituicaoRouter";
 
+import swaggerUi from "swagger-ui-express";
+import { specs } from "./config/swagger";
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use("/users", userRouter);
 app.use("/auth", userRouter);
