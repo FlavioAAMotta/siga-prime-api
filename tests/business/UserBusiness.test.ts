@@ -4,7 +4,7 @@ import { HashManager } from "../../src/services/HashManager"
 import { IdGenerator } from "../../src/services/IdGenerator"
 import { TokenManager, USER_ROLES } from "../../src/services/TokenManager"
 import { UserDatabase } from "../../src/data/UserDatabase"
-import { SignupInputDTO, UserRole } from "../../src/model/User"
+import { LoginInputDTO, SignupInputDTO, UserRole } from "../../src/model/User"
 
 describe("UserBusiness", () => {
     let userBusiness: UserBusiness
@@ -17,7 +17,8 @@ describe("UserBusiness", () => {
         userDatabaseMock = {
             findUserByEmail: jest.fn(),
             insertUser: jest.fn(),
-            insertUserRole: jest.fn()
+            insertUserRole: jest.fn(),
+            findUserRole: jest.fn()
         }
         idGeneratorMock = {
             generate: jest.fn().mockReturnValue("id-mock")
@@ -35,7 +36,8 @@ describe("UserBusiness", () => {
         userBusiness = new UserBusiness(
             userDatabaseMock as unknown as UserDatabase,
             idGeneratorMock as unknown as IdGenerator,
-            hashManagerMock as unknown as HashManager
+            hashManagerMock as unknown as HashManager,
+            tokenManagerMock as unknown as TokenManager
         )
     })
 
@@ -74,5 +76,60 @@ describe("UserBusiness", () => {
         }
 
         await expect(userBusiness.signup(input)).rejects.toThrow("Email and password are required")
+    })
+
+    test("Login successful", async () => {
+        const input: LoginInputDTO = {
+            email: "test@example.com",
+            password: "password123"
+        }
+
+        const userMock = {
+            id: "id-mock",
+            email: input.email,
+            password: "hash-mock"
+        }
+
+        userDatabaseMock.findUserByEmail.mockResolvedValue(userMock)
+        hashManagerMock.compare.mockResolvedValue(true)
+        userDatabaseMock.findUserRole.mockResolvedValue(UserRole.ADMIN)
+        tokenManagerMock.createToken.mockReturnValue("token-mock")
+
+        const result = await userBusiness.login(input)
+
+        expect(result).toBe("token-mock")
+        expect(userDatabaseMock.findUserByEmail).toHaveBeenCalledWith(input.email)
+        expect(hashManagerMock.compare).toHaveBeenCalledWith(input.password, userMock.password)
+        expect(userDatabaseMock.findUserRole).toHaveBeenCalledWith(userMock.id)
+        expect(tokenManagerMock.createToken).toHaveBeenCalled()
+    })
+
+    test("Login failure: User not found", async () => {
+        const input: LoginInputDTO = {
+            email: "test@example.com",
+            password: "password123"
+        }
+
+        userDatabaseMock.findUserByEmail.mockResolvedValue(null)
+
+        await expect(userBusiness.login(input)).rejects.toThrow("Invalid credentials")
+    })
+
+    test("Login failure: Incorrect password", async () => {
+        const input: LoginInputDTO = {
+            email: "test@example.com",
+            password: "password123"
+        }
+
+        const userMock = {
+            id: "id-mock",
+            email: input.email,
+            password: "hash-mock"
+        }
+
+        userDatabaseMock.findUserByEmail.mockResolvedValue(userMock)
+        hashManagerMock.compare.mockResolvedValue(false)
+
+        await expect(userBusiness.login(input)).rejects.toThrow("Invalid credentials")
     })
 })

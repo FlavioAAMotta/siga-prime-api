@@ -36,4 +36,17 @@ export class UserDatabase {
 
         return result as User;
     }
+    public findUserRole = async (userId: string): Promise<UserRole | null> => {
+        const result = await connection()
+            .select("role")
+            .from(UserDatabase.TABLE_USER_ROLES)
+            .where({ user_id: userId })
+            .first();
+
+        if (!result) {
+            return null;
+        }
+
+        return result.role as UserRole;
+    }
 }

@@ -14,10 +14,11 @@ const idGenerator = new IdGenerator();
 const hashManager = new HashManager();
 const tokenManager = new TokenManager();
 
-const userBusiness = new UserBusiness(userDatabase, idGenerator, hashManager);
+const userBusiness = new UserBusiness(userDatabase, idGenerator, hashManager, tokenManager);
 const userController = new UserController(userBusiness);
 const authMiddleware = new AuthMiddleware(tokenManager);
 
 userRouter.post("/signup", authMiddleware.handle([USER_ROLES.ADMIN]), (req, res) => userController.signup(req, res));
+userRouter.post("/login", (req, res) => userController.login(req, res));
 
 export default userRouter;
