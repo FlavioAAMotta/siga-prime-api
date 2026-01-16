@@ -6,6 +6,7 @@ import { AddressInfo } from "net";
 import connection from "./data/connection";
 import apiRouter from "./routes/apiRouter";
 import userRouter from "./routes/userRouter";
+import instituicaoRouter from "./routes/instituicaoRouter";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use("/users", userRouter);
 app.use("/auth", userRouter);
+app.use("/instituicoes", instituicaoRouter);
 app.use("/api", apiRouter);
 
 app.get("/ping", async (req: Request, res: Response) => {

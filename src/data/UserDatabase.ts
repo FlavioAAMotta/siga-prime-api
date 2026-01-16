@@ -49,4 +49,51 @@ export class UserDatabase {
 
         return result.role as UserRole;
     }
+
+    public getUserInstitutions = async (userId: string): Promise<any[]> => {
+        const result = await connection()
+            .select(
+                "ui.id as vinculo_id",
+                "ui.ativa",
+                "i.id",
+                "i.nome",
+                "i.tipo",
+                "i.ativo"
+            )
+            .from("user_instituicao as ui")
+            .join("instituicoes as i", "ui.instituicao_id", "i.id")
+            .where({ "ui.user_id": userId });
+
+        return result;
+    }
+
+    public activateUserInstitution = async (userId: string, instituicaoId: string): Promise<void> => {
+        await connection().transaction(async (trx) => {
+            // Desativar todas
+            await trx("user_instituicao")
+                .where({ user_id: userId })
+                .update({ ativa: false });
+
+            // Verificar se vínculo existe
+            const existingLink = await trx("user_instituicao")
+                .where({ user_id: userId, instituicao_id: instituicaoId })
+                .first();
+
+            if (existingLink) {
+                // Ativar existente
+                await trx("user_instituicao")
+                    .where({ id: existingLink.id })
+                    .update({ ativa: true });
+            } else {
+                // Criar novo vínculo ativo
+                await trx("user_instituicao")
+                    .insert({
+                        id: uuidv7(),
+                        user_id: userId,
+                        instituicao_id: instituicaoId,
+                        ativa: true
+                    });
+            }
+        });
+    }
 }

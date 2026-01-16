@@ -53,4 +53,25 @@ export class UserController {
             res.status(400).send({ error: error.message });
         }
     }
+
+    public getUserInstitutions = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const userId = req.params.id as string;
+            const institutions = await this.userBusiness.getUserInstitutions(userId);
+            res.status(200).send(institutions);
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
+
+    public activateUserInstitution = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const userId = req.params.id as string;
+            const { instituicaoId } = req.body;
+            await this.userBusiness.activateUserInstitution(userId, instituicaoId);
+            res.status(200).send({ message: "Institution activated successfully" });
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
 }

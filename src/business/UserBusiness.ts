@@ -82,4 +82,15 @@ export class UserBusiness {
             role: payload.role
         };
     }
+
+    public getUserInstitutions = async (userId: string) => {
+        return this.userDatabase.getUserInstitutions(userId);
+    }
+
+    public activateUserInstitution = async (userId: string, instituicaoId: string) => {
+        if (!instituicaoId) {
+            throw new Error("Institution ID is required");
+        }
+        await this.userDatabase.activateUserInstitution(userId, instituicaoId);
+    }
 }

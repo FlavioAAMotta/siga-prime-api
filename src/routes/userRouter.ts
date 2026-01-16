@@ -21,5 +21,7 @@ const authMiddleware = new AuthMiddleware(tokenManager);
 userRouter.post("/signup", authMiddleware.handle([USER_ROLES.ADMIN]), (req, res) => userController.signup(req, res));
 userRouter.post("/login", (req, res) => userController.login(req, res));
 userRouter.get("/session", (req, res) => userController.getSession(req, res));
+userRouter.get("/:id/instituicoes", (req, res) => userController.getUserInstitutions(req, res));
+userRouter.patch("/:id/instituicoes/activate", (req, res) => userController.activateUserInstitution(req, res));
 
 export default userRouter;
