@@ -605,4 +605,62 @@ const preceptorAmbulatorioController = new PreceptorAmbulatorioController(precep
  */
 createRoutes(apiRouter, "/preceptor_ambulatorio", preceptorAmbulatorioController);
 
+// ... imports
+import { UserInstituicaoController } from "../controller/UserInstituicaoController";
+import { UserInstituicaoBusiness } from "../business/UserInstituicaoBusiness";
+import { UserInstituicaoDatabase } from "../data/UserInstituicaoDatabase";
+
+// ... existing code
+
+// User Instituicao
+const userInstituicaoDatabase = new UserInstituicaoDatabase();
+const userInstituicaoBusiness = new UserInstituicaoBusiness();
+const userInstituicaoController = new UserInstituicaoController();
+/**
+ * @openapi
+ * /api/user_instituicao:
+ *   get:
+ *     tags: [UserInstituicao]
+ *     summary: Get all user instituicao
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user instituicao
+ *   post:
+ *     tags: [UserInstituicao]
+ *     summary: Create user instituicao
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: User instituicao created
+ * /api/user_instituicao/{id}:
+ *   patch:
+ *     tags: [UserInstituicao]
+ *     summary: Update user instituicao
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: User instituicao updated
+ *   delete:
+ *     tags: [UserInstituicao]
+ *     summary: Delete user instituicao
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: User instituicao deleted
+ */
+createRoutes(apiRouter, "/user_instituicao", userInstituicaoController);
+
 export default apiRouter;

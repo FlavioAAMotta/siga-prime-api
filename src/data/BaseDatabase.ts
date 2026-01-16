@@ -62,8 +62,16 @@ export abstract class BaseDatabase {
     }
 
     public create = async (data: any): Promise<any> => {
-        if (!data.id) {
-            data.id = uuidv7();
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                if (!item.id) {
+                    item.id = uuidv7();
+                }
+            });
+        } else {
+            if (!data.id) {
+                data.id = uuidv7();
+            }
         }
 
         await connection()(this.table).insert(data);
