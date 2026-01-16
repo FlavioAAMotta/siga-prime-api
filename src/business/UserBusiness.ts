@@ -68,4 +68,18 @@ export class UserBusiness {
 
         return token;
     }
+
+    public getSession = async (token: string): Promise<any> => {
+        const payload = this.tokenManager.getPayload(token);
+
+        if (!payload) {
+            throw new Error("Invalid token");
+        }
+
+        return {
+            id: payload.id,
+            email: payload.name,
+            role: payload.role
+        };
+    }
 }

@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/users", userRouter);
+app.use("/auth", userRouter);
 
 app.get("/ping", async (req: Request, res: Response) => {
   try {
