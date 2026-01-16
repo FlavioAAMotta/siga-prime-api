@@ -1,0 +1,17 @@
+
+export enum UserRole {
+    ADMIN = "ADMIN",
+    USER = "USER"
+}
+
+export interface User {
+    id: string;
+    email: string;
+    password?: string;
+    created_at: Date;
+}
+
+export interface SignupInputDTO {
+    email: string;
+    password: string;
+}

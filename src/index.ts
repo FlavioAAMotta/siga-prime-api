@@ -4,11 +4,14 @@ import cors from "cors";
 
 import { AddressInfo } from "net";
 import connection from "./data/connection";
+import userRouter from "./routes/userRouter";
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+app.use("/users", userRouter);
 
 app.get("/ping", async (req: Request, res: Response) => {
   try {
@@ -29,8 +32,12 @@ app.get("/db/ping", async (req: Request, res: Response) => {
 
 const server = app.listen(process.env.PORT || 3003, () => {
   if (server) {
-    const address = server.address() as AddressInfo;
-    console.log(`Server is running in http://localhost:${address.port}`);
+    const address = server.address();
+    if (address && typeof address !== 'string') {
+      console.log(`Server is running in http://localhost:${address.port}`);
+    } else {
+      console.log(`Server is running on port ${process.env.PORT || 3003}`);
+    }
   } else {
     console.error(`Failure upon starting server.`);
   }

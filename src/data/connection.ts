@@ -5,17 +5,6 @@ let connection: Knex | null = null;
 
 function getConnection(): Knex {
     if (!connection) {
-        // Validar variáveis de ambiente obrigatórias
-        const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
-        const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-        
-        if (missingVars.length > 0) {
-            throw new Error(
-                `Variáveis de ambiente não configuradas: ${missingVars.join(', ')}. ` +
-                `Por favor, crie um arquivo .env na raiz do projeto com essas variáveis.`
-            );
-        }
-
         connection = knex({
             client: "mysql2", 
             connection: {
