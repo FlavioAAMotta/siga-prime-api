@@ -808,4 +808,18 @@ createRoutes(apiRouter, "/coordenadores", coordenadoresController);
 // User creation route for coordinators
 apiRouter.post("/coordenadores/:id/user", (req, res) => coordenadoresController.createUser(req, res));
 
+// Mock Functions
+apiRouter.post("/functions/analyze-recent-activity", (req, res) => {
+    // Mock response for AI analysis
+    res.status(200).send({
+        analysis: "TODO: Implementar análise de atividades recentes",
+        stats: {
+            presencas: 42,
+            pontos: 156,
+            avaliacoes: 8,
+            taxaPresenca: 92
+        }
+    });
+});
+
 export default apiRouter;
