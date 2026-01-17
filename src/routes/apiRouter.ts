@@ -609,8 +609,9 @@ createRoutes(apiRouter, "/preceptor_ambulatorio", preceptorAmbulatorioController
 import { UserInstituicaoController } from "../controller/UserInstituicaoController";
 import { UserInstituicaoBusiness } from "../business/UserInstituicaoBusiness";
 import { UserInstituicaoDatabase } from "../data/UserInstituicaoDatabase";
-
-// ... existing code
+import { AvaliacoesController } from "../controller/AvaliacoesController";
+import { AvaliacoesBusiness } from "../business/AvaliacoesBusiness";
+import { AvaliacoesDatabase } from "../data/AvaliacoesDatabase";
 
 // User Instituicao
 const userInstituicaoDatabase = new UserInstituicaoDatabase();
@@ -662,5 +663,55 @@ const userInstituicaoController = new UserInstituicaoController();
  *         description: User instituicao deleted
  */
 createRoutes(apiRouter, "/user_instituicao", userInstituicaoController);
+
+// Avaliacoes
+const avaliacoesController = new AvaliacoesController();
+/**
+ * @openapi
+ * /api/avaliacoes:
+ *   get:
+ *     tags: [Avaliacoes]
+ *     summary: Get all avaliacoes
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of avaliacoes
+ *   post:
+ *     tags: [Avaliacoes]
+ *     summary: Create avaliacao
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: Avaliacao created
+ * /api/avaliacoes/{id}:
+ *   patch:
+ *     tags: [Avaliacoes]
+ *     summary: Update avaliacao
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Avaliacao updated
+ *   delete:
+ *     tags: [Avaliacoes]
+ *     summary: Delete avaliacao
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Avaliacao deleted
+ */
+createRoutes(apiRouter, "/avaliacoes", avaliacoesController);
+
 
 export default apiRouter;
