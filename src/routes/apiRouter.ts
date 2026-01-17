@@ -714,4 +714,98 @@ const avaliacoesController = new AvaliacoesController();
 createRoutes(apiRouter, "/avaliacoes", avaliacoesController);
 
 
+import { NucleosController } from "../controller/NucleosController";
+import { NucleosBusiness } from "../business/NucleosBusiness";
+import { NucleosDatabase } from "../data/NucleosDatabase";
+import { CoordenadoresController } from "../controller/CoordenadoresController";
+import { CoordenadoresBusiness } from "../business/CoordenadoresBusiness";
+import { CoordenadoresDatabase } from "../data/CoordenadoresDatabase";
+
+// ... previous routes ...
+
+// Nucleos
+const nucleosController = new NucleosController();
+/**
+ * @openapi
+ * /api/nucleos:
+ *   get:
+ *     tags: [Nucleos]
+ *     summary: Get all nucleos
+ *     responses:
+ *       200:
+ *         description: List of nucleos
+ *   post:
+ *     tags: [Nucleos]
+ *     summary: Create nucleo
+ *     responses:
+ *       201:
+ *         description: Nucleo created
+ * /api/nucleos/{id}:
+ *   patch:
+ *     tags: [Nucleos]
+ *     summary: Update nucleo
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Nucleo updated
+ *   delete:
+ *     tags: [Nucleos]
+ *     summary: Delete nucleo
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Nucleo deleted
+ */
+createRoutes(apiRouter, "/nucleos", nucleosController);
+
+// Coordenadores
+const coordenadoresController = new CoordenadoresController();
+/**
+ * @openapi
+ * /api/coordenadores:
+ *   get:
+ *     tags: [Coordenadores]
+ *     summary: Get all coordenadores
+ *     responses:
+ *       200:
+ *         description: List of coordenadores
+ *   post:
+ *     tags: [Coordenadores]
+ *     summary: Create coordenador
+ *     responses:
+ *       201:
+ *         description: Coordenador created
+ * /api/coordenadores/{id}:
+ *   patch:
+ *     tags: [Coordenadores]
+ *     summary: Update coordenador
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Coordenador updated
+ *   delete:
+ *     tags: [Coordenadores]
+ *     summary: Delete coordenador
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Coordenador deleted
+ */
+createRoutes(apiRouter, "/coordenadores", coordenadoresController);
+
+// User creation route for coordinators
+apiRouter.post("/coordenadores/:id/user", (req, res) => coordenadoresController.createUser(req, res));
+
 export default apiRouter;
