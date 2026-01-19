@@ -4,7 +4,21 @@ import cors from "cors";
 
 import { AddressInfo } from "net";
 import connection from "./data/connection";
-import apiRouter from "./routes/apiRouter";
+import dashboardRouter from "./routes/dashboardRouter";
+import alunosRouter from "./routes/alunosRouter";
+import preceptoresRouter from "./routes/preceptoresRouter";
+import turmasRouter from "./routes/turmasRouter";
+import ambulatoriosRouter from "./routes/ambulatoriosRouter";
+import disciplinasRouter from "./routes/disciplinasRouter";
+import alunoPresencasRouter from "./routes/alunoPresencasRouter";
+import registrosPontoRouter from "./routes/registrosPontoRouter";
+import turmaDisciplinasRouter from "./routes/turmaDisciplinasRouter";
+import alunoTurmaPraticaRouter from "./routes/alunoTurmaPraticaRouter";
+import preceptorAmbulatorioRouter from "./routes/preceptorAmbulatorioRouter";
+import userInstituicaoRouter from "./routes/userInstituicaoRouter";
+import avaliacoesRouter from "./routes/avaliacoesRouter";
+import nucleosRouter from "./routes/nucleosRouter";
+import coordenadoresRouter from "./routes/coordenadoresRouter";
 import userRouter from "./routes/userRouter";
 import instituicaoRouter from "./routes/instituicaoRouter";
 
@@ -25,7 +39,21 @@ app.get("/api-docs.json", (req, res) => {
 app.use("/users", userRouter);
 app.use("/auth", userRouter);
 app.use("/instituicoes", instituicaoRouter);
-app.use("/api", apiRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/alunos", alunosRouter);
+app.use("/api/preceptores", preceptoresRouter);
+app.use("/api/turmas", turmasRouter);
+app.use("/api/ambulatorios", ambulatoriosRouter);
+app.use("/api/disciplinas", disciplinasRouter);
+app.use("/api/aluno_presencas", alunoPresencasRouter);
+app.use("/api/registros_ponto", registrosPontoRouter);
+app.use("/api/turma_disciplinas", turmaDisciplinasRouter);
+app.use("/api/aluno_turma_pratica", alunoTurmaPraticaRouter);
+app.use("/api/preceptor_ambulatorio", preceptorAmbulatorioRouter);
+app.use("/api/user_instituicao", userInstituicaoRouter);
+app.use("/api/avaliacoes", avaliacoesRouter);
+app.use("/api/nucleos", nucleosRouter);
+app.use("/api/coordenadores", coordenadoresRouter);
 
 // Mock Functions logic defined at root level to match client expectation
 app.post("/functions/analyze-recent-activity", (req, res) => {
