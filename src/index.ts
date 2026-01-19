@@ -18,6 +18,7 @@ import preceptorAmbulatorioRouter from "./routes/preceptorAmbulatorioRouter";
 import userInstituicaoRouter from "./routes/userInstituicaoRouter";
 import avaliacoesRouter from "./routes/avaliacoesRouter";
 import nucleosRouter from "./routes/nucleosRouter";
+import nucleoDisciplinasRouter from "./routes/nucleoDisciplinasRouter";
 import coordenadoresRouter from "./routes/coordenadoresRouter";
 import userRouter from "./routes/userRouter";
 import instituicaoRouter from "./routes/instituicaoRouter";
@@ -53,6 +54,7 @@ app.use("/api/preceptor_ambulatorio", preceptorAmbulatorioRouter);
 app.use("/api/user_instituicao", userInstituicaoRouter);
 app.use("/api/avaliacoes", avaliacoesRouter);
 app.use("/api/nucleos", nucleosRouter);
+app.use("/api/nucleo_disciplinas", nucleoDisciplinasRouter);
 app.use("/api/coordenadores", coordenadoresRouter);
 
 // Mock Functions logic defined at root level to match client expectation
