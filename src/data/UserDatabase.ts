@@ -96,4 +96,11 @@ export class UserDatabase {
             }
         });
     }
+
+    public updatePassword = async (userId: string, password: string): Promise<void> => {
+        await connection()
+            .from(UserDatabase.TABLE_USERS)
+            .where({ id: userId })
+            .update({ password });
+    }
 }
