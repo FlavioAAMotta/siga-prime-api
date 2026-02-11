@@ -4,7 +4,8 @@ export enum INSTITUICAO_TIPO {
 }
 
 export interface Instituicao {
-    id: string;
+    id: number;
+    uuid: string;
     nome: string;
     tipo: INSTITUICAO_TIPO;
     ativo: boolean;

@@ -35,7 +35,6 @@ export class UserBusiness {
             created_at: new Date()
         });
 
-        // Default role is ADMIN as requested
         await this.userDatabase.insertUserRole(id, UserRole.ADMIN);
     }
 

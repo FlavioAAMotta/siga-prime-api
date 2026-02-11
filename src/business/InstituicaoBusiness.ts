@@ -23,10 +23,10 @@ export class InstituicaoBusiness {
             throw new Error("Tipo de instituição inválido");
         }
 
-        const id = this.idGenerator.generate();
+        const uuid = this.idGenerator.generate();
 
         const instituicao = {
-            id,
+            uuid,
             nome,
             tipo: tipo || INSTITUICAO_TIPO.PRODUCAO,
             ativo: ativo !== undefined ? ativo : true,
@@ -42,7 +42,7 @@ export class InstituicaoBusiness {
     public update = async (id: string, input: UpdateInstituicaoInputDTO) => {
         const { nome, tipo, ativo } = input;
 
-        const instituicao = await this.instituicaoDatabase.findById(id);
+        const instituicao = await this.instituicaoDatabase.findByUuid(id);
 
         if (!instituicao) {
             throw new Error("Instituição não encontrada");
@@ -59,18 +59,18 @@ export class InstituicaoBusiness {
             updated_at: new Date()
         };
 
-        await this.instituicaoDatabase.update(id, updatedInstituicao);
+        await this.instituicaoDatabase.updateByUuid(id, updatedInstituicao);
 
         return { ...instituicao, ...updatedInstituicao };
     }
 
     public delete = async (id: string) => {
-        const instituicao = await this.instituicaoDatabase.findById(id);
+        const instituicao = await this.instituicaoDatabase.findByUuid(id);
 
         if (!instituicao) {
             throw new Error("Instituição não encontrada");
         }
 
-        await this.instituicaoDatabase.delete(id);
+        await this.instituicaoDatabase.deleteByUuid(id);
     }
 }
