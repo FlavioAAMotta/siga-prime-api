@@ -19,6 +19,9 @@ const sshOptions = {
     port: Number(process.env.SSH_PORT) || 2222,
     username: process.env.SSH_USER,
     password: process.env.SSH_PASS,
+    // ADICIONADO: Mantém o túnel vivo enviando pacotes a cada 10s
+    keepaliveInterval: 10000,
+    keepaliveCountMax: 3
 };
 
 const forwardOptions = {
