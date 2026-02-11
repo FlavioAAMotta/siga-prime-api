@@ -15,7 +15,7 @@ async function getConnectionConfig() {
       };
 
       const serverOptions = {
-        port: 3307
+        port: 3308
       };
 
       const sshOptions = {
@@ -34,7 +34,7 @@ async function getConnectionConfig() {
         // @ts-ignore
         const result = await createTunnel(tunnelOptions, serverOptions, sshOptions, forwardOptions);
         tunnel = result[0];
-        console.log('✅ Túnel aberto na porta 3307');
+        console.log('✅ Túnel aberto na porta 3308');
       } catch (error) {
         console.error('❌ Erro ao abrir túnel:', error);
         throw error;
@@ -43,7 +43,7 @@ async function getConnectionConfig() {
 
     return {
       host: '127.0.0.1',
-      port: 3307,
+      port: 3308,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD || process.env.DB_PASS,
       database: process.env.DB_NAME,

@@ -17,7 +17,7 @@ export class UserDatabase {
 
     public insertUserRole = async (userId: string, role: UserRole): Promise<void> => {
         await connection().insert({
-            id: uuidv7(),
+            uuid: uuidv7(),
             user_id: userId,
             role: role
         }).into(UserDatabase.TABLE_USER_ROLES);
@@ -88,7 +88,7 @@ export class UserDatabase {
                 // Criar novo vínculo ativo
                 await trx("user_instituicao")
                     .insert({
-                        id: uuidv7(),
+                        uuid: uuidv7(),
                         user_id: userId,
                         instituicao_id: instituicaoId,
                         ativa: true

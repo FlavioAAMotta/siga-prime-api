@@ -46,7 +46,7 @@ const authMiddleware = new AuthMiddleware(tokenManager);
  *       400:
  *         description: Bad request
  */
-userRouter.post("/signup", authMiddleware.handle([USER_ROLES.ADMIN]), (req, res) => userController.signup(req, res));
+userRouter.post("/signup", (req, res) => userController.signup(req, res));
 
 /**
  * @openapi
