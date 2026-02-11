@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express, { Request, Response } from "express";
 import cors from "cors";
 
-import { AddressInfo } from "net";
+import { initDatabase } from './data/connection'; // Importe a nova função
 import connection from "./data/connection";
 import dashboardRouter from "./routes/dashboardRouter";
 import alunosRouter from "./routes/alunosRouter";
@@ -87,15 +87,20 @@ app.get("/db/ping", async (req: Request, res: Response) => {
   }
 });
 
-const server = app.listen(process.env.PORT || 3003, () => {
-  if (server) {
-    const address = server.address();
-    if (address && typeof address !== 'string') {
-      console.log(`Server is running in http://localhost:${address.port}`);
-    } else {
-      console.log(`Server is running on port ${process.env.PORT || 3003}`);
-    }
-  } else {
-    console.error(`Failure upon starting server.`);
+const PORT = process.env.PORT || 3000;
+const startServer = async () => {
+  try {
+    // 1. Primeiro inicia o banco (e o túnel)
+    await initDatabase();
+
+    // 2. Só depois sobe o servidor
+    app.listen(PORT, () => {
+      console.log(`🔥 Servidor rodando na porta ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Falha fatal ao iniciar servidor:', error);
+    process.exit(1);
   }
-});
+};
+
+startServer();
