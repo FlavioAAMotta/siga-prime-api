@@ -103,4 +103,21 @@ export class UserDatabase {
             .where({ id: userId })
             .update({ password });
     }
+
+    public linkUserToInstitution = async (userId: string, instituicaoId: string): Promise<void> => {
+        const existingLink = await connection()
+            .select("*")
+            .from("user_instituicao")
+            .where({ user_id: userId, instituicao_id: instituicaoId })
+            .first();
+
+        if (!existingLink) {
+            await connection().insert({
+                uuid: uuidv7(),
+                user_id: userId,
+                instituicao_id: instituicaoId,
+                ativa: true
+            }).into("user_instituicao");
+        }
+    }
 }

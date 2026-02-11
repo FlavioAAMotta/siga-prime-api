@@ -72,4 +72,17 @@ export class InstituicaoController {
             res.status(400).send({ error: error.message });
         }
     }
+
+    public linkUser = async (req: Request, res: Response) => {
+        try {
+            const instituicaoId = req.params.id as string;
+            const { email } = req.body;
+
+            await this.instituicaoBusiness.linkUser(instituicaoId, email);
+
+            res.status(200).send({ message: "User linked to institution successfully" });
+        } catch (error: any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
 }

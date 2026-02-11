@@ -2,13 +2,15 @@ import express from "express";
 import { InstituicaoController } from "../controller/InstituicaoController";
 import { InstituicaoBusiness } from "../business/InstituicaoBusiness";
 import { InstituicaoDatabase } from "../data/InstituicaoDatabase";
+import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/IdGenerator";
 
 const instituicaoRouter = express.Router();
 
 const instituicaoDatabase = new InstituicaoDatabase();
+const userDatabase = new UserDatabase();
 const idGenerator = new IdGenerator();
-const instituicaoBusiness = new InstituicaoBusiness(instituicaoDatabase, idGenerator);
+const instituicaoBusiness = new InstituicaoBusiness(instituicaoDatabase, idGenerator, userDatabase);
 const instituicaoController = new InstituicaoController(instituicaoBusiness);
 
 /**
@@ -86,5 +88,36 @@ instituicaoRouter.post("/", (req, res) => instituicaoController.create(req, res)
  */
 instituicaoRouter.patch("/:id", (req, res) => instituicaoController.update(req, res));
 instituicaoRouter.delete("/:id", (req, res) => instituicaoController.delete(req, res));
+
+/**
+ * @openapi
+ * /instituicoes/{id}/vincular:
+ *   post:
+ *     tags: [Instituicoes]
+ *     summary: Link user to institution
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User linked successfully
+ */
+instituicaoRouter.post("/:id/vincular", (req, res) => instituicaoController.linkUser(req, res));
 
 export default instituicaoRouter;

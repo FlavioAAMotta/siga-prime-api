@@ -1,11 +1,13 @@
 import { InstituicaoDatabase } from "../data/InstituicaoDatabase";
+import { UserDatabase } from "../data/UserDatabase";
 import { CreateInstituicaoInputDTO, UpdateInstituicaoInputDTO, INSTITUICAO_TIPO } from "../model/Instituicao";
 import { IdGenerator } from "../services/IdGenerator";
 
 export class InstituicaoBusiness {
     constructor(
         private instituicaoDatabase: InstituicaoDatabase,
-        private idGenerator: IdGenerator
+        private idGenerator: IdGenerator,
+        private userDatabase: UserDatabase
     ) { }
 
     public getAll = async (queryParams: any) => {
@@ -72,5 +74,21 @@ export class InstituicaoBusiness {
         }
 
         await this.instituicaoDatabase.deleteByUuid(id);
+    }
+
+    public linkUser = async (instituicaoId: string, email: string) => {
+        const instituicao = await this.instituicaoDatabase.findByUuid(instituicaoId);
+
+        if (!instituicao) {
+            throw new Error("Instituição não encontrada");
+        }
+
+        const user = await this.userDatabase.findUserByEmail(email);
+
+        if (!user) {
+            throw new Error("Usuário não encontrado");
+        }
+
+        await this.userDatabase.linkUserToInstitution(user.id, instituicaoId);
     }
 }
