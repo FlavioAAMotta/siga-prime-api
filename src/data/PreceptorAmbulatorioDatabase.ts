@@ -11,18 +11,34 @@ export class PreceptorAmbulatorioDatabase extends BaseDatabase {
                 "preceptores.id as preceptor_id_join",
                 "preceptores.nome as preceptor_nome",
                 "preceptores.crm as preceptor_crm",
+                "ambulatorios.id as ambulatorio_id_join",
+                "ambulatorios.nome as ambulatorio_nome",
+                "ambulatorios.localizacao as ambulatorio_localizacao",
+                "ambulatorios.disciplina_id as ambulatorio_disciplina_id",
                 "disciplinas.id as disciplina_id_join",
                 "disciplinas.nome as disciplina_nome"
             )
             .leftJoin("preceptores", "preceptor_ambulatorio.preceptor_id", "preceptores.id")
+            .leftJoin("ambulatorios", "preceptor_ambulatorio.ambulatorio_id", "ambulatorios.id")
             .leftJoin("disciplinas", "preceptor_ambulatorio.disciplina_id", "disciplinas.id");
 
         if (params.filters) {
             Object.entries(params.filters).forEach(([key, value]) => {
                 if (value === "true") value = true;
                 if (value === "false") value = false;
-                // Ambiguity check
-                query.where(`preceptor_ambulatorio.${key}`, value);
+
+                // Tratar filtros específicos para colunas de tabelas relacionadas
+                if (key === 'disciplina_id') {
+                    // O filtro de disciplina pode vir tanto direto no preceptor_ambulatorio quanto via ambulatorio
+                    query.where(function () {
+                        this.where('preceptor_ambulatorio.disciplina_id', value)
+                            .orWhere('ambulatorios.disciplina_id', value);
+                    });
+                } else if (key.includes('.')) {
+                    query.where(key, value);
+                } else {
+                    query.where(`preceptor_ambulatorio.${key}`, value);
+                }
             });
         }
 
@@ -48,6 +64,13 @@ export class PreceptorAmbulatorioDatabase extends BaseDatabase {
                 nome: row.preceptor_nome,
                 crm: row.preceptor_crm
             } : null,
+            ambulatorios: row.ambulatorio_id_join ? {
+                id: row.ambulatorio_id_join,
+                nome: row.ambulatorio_nome,
+                localizacao: row.ambulatorio_localizacao,
+                disciplina_id: row.ambulatorio_disciplina_id
+            } : null,
+            // Mantém para compatibilidade se necessário
             disciplina: row.disciplina_id_join ? {
                 id: row.disciplina_id_join,
                 nome: row.disciplina_nome
