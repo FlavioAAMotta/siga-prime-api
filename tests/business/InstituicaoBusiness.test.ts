@@ -7,6 +7,7 @@ describe("InstituicaoBusiness", () => {
     let instituicaoBusiness: InstituicaoBusiness;
     let instituicaoDatabaseMock: any;
     let idGeneratorMock: any;
+    let userDatabaseMock: any;
 
     beforeEach(() => {
         instituicaoDatabaseMock = {
@@ -14,6 +15,9 @@ describe("InstituicaoBusiness", () => {
             create: jest.fn(),
             update: jest.fn(),
             findById: jest.fn(),
+            findByUuid: jest.fn(),
+            updateByUuid: jest.fn(),
+            deleteByUuid: jest.fn(),
             delete: jest.fn()
         };
 
@@ -21,9 +25,15 @@ describe("InstituicaoBusiness", () => {
             generate: jest.fn().mockReturnValue("id-mock")
         };
 
+        userDatabaseMock = {
+            findUserByEmail: jest.fn(),
+            linkUserToInstitution: jest.fn()
+        };
+
         instituicaoBusiness = new InstituicaoBusiness(
-            instituicaoDatabaseMock as unknown as InstituicaoDatabase,
-            idGeneratorMock as unknown as IdGenerator
+            instituicaoDatabaseMock as any,
+            idGeneratorMock as any,
+            userDatabaseMock as any
         );
     });
 

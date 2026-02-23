@@ -31,12 +31,12 @@ const forwardOptions = {
 
 export async function initDatabase(): Promise<void> {
 
-    // Lógica do Túnel (apenas em DEV)
-    if (process.env.NODE_ENV === 'development') {
+    // Lógica do Túnel (apenas em DEV e se explicitamente solicitado)
+    const useSSH = process.env.USE_SSH === 'true';
+
+    if (process.env.NODE_ENV === 'development' && useSSH) {
         try {
             console.log('🔌 Tentando abrir túnel SSH...');
-
-            // AGORA SIM: Passando os 4 argumentos separadamente
             // @ts-ignore (caso o TypeScript reclame de tipos específicos do serverOptions)
             const [server, client] = await createTunnel(
                 tunnelOptions,
@@ -57,10 +57,10 @@ export async function initDatabase(): Promise<void> {
     const dbConfig = {
         client: 'mysql2',
         connection: {
-            host: process.env.NODE_ENV === 'development' ? '127.0.0.1' : process.env.DB_HOST,
-            port: process.env.NODE_ENV === 'development' ? 3307 : Number(process.env.DB_PORT),
+            host: (process.env.NODE_ENV === 'development' && useSSH) ? '127.0.0.1' : process.env.DB_HOST,
+            port: (process.env.NODE_ENV === 'development' && useSSH) ? 3307 : Number(process.env.DB_PORT),
             user: process.env.DB_USER,
-            password: process.env.DB_PASS,
+            password: process.env.DB_PASSWORD, // Corrigido de DB_PASS para DB_PASSWORD
             database: process.env.DB_NAME,
         },
         pool: {
