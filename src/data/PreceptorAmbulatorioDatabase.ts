@@ -59,7 +59,7 @@ export class PreceptorAmbulatorioDatabase extends BaseDatabase {
 
         return result.map((row: any) => ({
             ...row,
-            preceptor: row.preceptor_id_join ? {
+            preceptores: row.preceptor_id_join ? {
                 id: row.preceptor_id_join,
                 nome: row.preceptor_nome,
                 crm: row.preceptor_crm
