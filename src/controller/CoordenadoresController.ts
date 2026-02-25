@@ -3,11 +3,9 @@ import { CoordenadoresBusiness } from "../business/CoordenadoresBusiness";
 import { parseQueryParams } from "../utils/paramsParser";
 
 export class CoordenadoresController {
-    private coordenadoresBusiness: CoordenadoresBusiness;
-
-    constructor() {
-        this.coordenadoresBusiness = new CoordenadoresBusiness();
-    }
+    constructor(
+        private coordenadoresBusiness: CoordenadoresBusiness
+    ) { }
 
     public getAll = async (req: Request, res: Response) => {
         try {

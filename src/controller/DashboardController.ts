@@ -8,7 +8,8 @@ export class DashboardController {
 
     public getSummary = async (req: Request, res: Response) => {
         try {
-            const summary = await this.dashboardBusiness.getSummary();
+            const instituicaoId = req.headers["x-instituicao-id"] as string | undefined;
+            const summary = await this.dashboardBusiness.getSummary(instituicaoId);
             res.status(200).send(summary);
         } catch (error: any) {
             res.status(400).send({ error: error.message });

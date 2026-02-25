@@ -61,7 +61,7 @@ export class UserDatabase {
                 "i.ativo"
             )
             .from("user_instituicao as ui")
-            .join("instituicoes as i", "ui.instituicao_id", "i.id")
+            .join("instituicoes as i", "ui.instituicao_id", "i.uuid")
             .where({ "ui.user_id": userId });
 
         return result;
@@ -104,7 +104,7 @@ export class UserDatabase {
             .update({ password });
     }
 
-    public linkUserToInstitution = async (userId: string, instituicaoId: string): Promise<void> => {
+    public linkUserToInstituicao = async (userId: string, instituicaoId: string): Promise<void> => {
         const existingLink = await connection()
             .select("*")
             .from("user_instituicao")

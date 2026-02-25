@@ -1,21 +1,22 @@
 import { DashboardDatabase } from "../data/DashboardDatabase";
+import { DateUtils } from "../utils/DateUtils";
 
 export class DashboardBusiness {
     constructor(
         private dashboardDatabase: DashboardDatabase
     ) { }
 
-    public getSummary = async (): Promise<any> => {
+    public getSummary = async (instituicaoId?: string): Promise<any> => {
         // Fetch base counts
-        const alunosAtivos = await this.dashboardDatabase.countActiveAlunos();
-        const preceptores = await this.dashboardDatabase.countActivePreceptores();
-        const ambulatorios = await this.dashboardDatabase.countActiveAmbulatorios();
-        const turmasAtivas = await this.dashboardDatabase.countActiveTurmas();
+        const alunosAtivos = await this.dashboardDatabase.countActiveAlunos(instituicaoId);
+        const preceptores = await this.dashboardDatabase.countActivePreceptores(instituicaoId);
+        const ambulatorios = await this.dashboardDatabase.countActiveAmbulatorios(instituicaoId);
+        const turmasAtivas = await this.dashboardDatabase.countActiveTurmas(instituicaoId);
 
         // Calculate presence rate (last 30 days)
         const date30DaysAgo = new Date();
         date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
-        const presencas = await this.dashboardDatabase.getPresencasLastMonth(date30DaysAgo.toISOString().split('T')[0]);
+        const presencas = await this.dashboardDatabase.getPresencasLastMonth(date30DaysAgo.toISOString().split('T')[0], instituicaoId);
 
         let taxaPresenca = 0;
         if (presencas && presencas.length > 0) {
@@ -28,7 +29,7 @@ export class DashboardBusiness {
         startOfMonth.setDate(1);
         startOfMonth.setHours(0, 0, 0, 0);
 
-        const registrosPonto = await this.dashboardDatabase.getRegistrosPontoCurrentMonth(startOfMonth.toISOString());
+        const registrosPonto = await this.dashboardDatabase.getRegistrosPontoCurrentMonth(startOfMonth.toISOString(), instituicaoId);
 
         let horasRegistradas = 0;
         if (registrosPonto) {
@@ -43,19 +44,62 @@ export class DashboardBusiness {
         // Calculate inconsistencies (entry older than yesterday with no exit)
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        const inconsistencias = await this.dashboardDatabase.countInconsistencies(yesterday.toISOString());
+        const inconsistencias = await this.dashboardDatabase.countInconsistencies(yesterday.toISOString(), instituicaoId);
 
-        // Days remaining calculation
+        // Days remaining calculation using Brazilian Calendar
         const agora = new Date();
-        const fimAno = new Date(agora.getFullYear(), 11, 31);
-        const diasRestantes = Math.max(0, Math.floor((fimAno.getTime() - agora.getTime()) / (1000 * 60 * 60 * 24)));
-        const diasLetivos = Math.min(diasRestantes, 127);
+        const diasLetivos = DateUtils.getRemainingDiasLetivos(agora);
 
-        // Mock trends for now
+        // Calculate real trends
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const sixtyDaysAgo = new Date();
+        sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+        const date30Str = thirtyDaysAgo.toISOString().split('T')[0];
+        const date60Str = sixtyDaysAgo.toISOString().split('T')[0];
+
+        // 1. Alunos Trend (Growth in the last 30 days)
+        const alunos30DaysAgo = await this.dashboardDatabase.countActiveAlunosBefore(date30Str, instituicaoId);
+        let trendAlunos = 0;
+        if (alunos30DaysAgo > 0) {
+            trendAlunos = ((alunosAtivos - alunos30DaysAgo) / alunos30DaysAgo) * 100;
+        } else if (alunosAtivos > 0) {
+            trendAlunos = 100;
+        }
+
+        // 2. Preceptores Trend
+        const preceptores30DaysAgo = await this.dashboardDatabase.countActivePreceptoresBefore(date30Str, instituicaoId);
+        let trendPreceptores = 0;
+        if (preceptores30DaysAgo > 0) {
+            trendPreceptores = ((preceptores - preceptores30DaysAgo) / preceptores30DaysAgo) * 100;
+        } else if (preceptores > 0) {
+            trendPreceptores = 100;
+        }
+
+        // 3. Presence Trend (Current 30 days vs Previous 30 days)
+        const presencasPrevious = await this.dashboardDatabase.getPresencasByRange(date60Str, date30Str, instituicaoId);
+        let taxaPresencaPrevious = 0;
+        if (presencasPrevious && presencasPrevious.length > 0) {
+            const presentesPrev = presencasPrevious.filter(p => p.presente).length;
+            taxaPresencaPrevious = (presentesPrev / presencasPrevious.length) * 100;
+        }
+
+        const diffPresenca = taxaPresenca - taxaPresencaPrevious;
+
         const trends = {
-            alunos: { value: 5.2, isPositive: true },
-            preceptores: { value: 2.1, isPositive: true },
-            presenca: { value: Math.round((Math.random() * 5) * 100) / 100, isPositive: taxaPresenca > 85 }
+            alunos: {
+                value: Math.round(trendAlunos * 10) / 10,
+                isPositive: trendAlunos >= 0
+            },
+            preceptores: {
+                value: Math.round(trendPreceptores * 10) / 10,
+                isPositive: trendPreceptores >= 0
+            },
+            presenca: {
+                value: Math.round(Math.abs(diffPresenca) * 10) / 10,
+                isPositive: diffPresenca >= 0
+            }
         };
 
         return {

@@ -89,6 +89,6 @@ export class InstituicaoBusiness {
             throw new Error("Usuário não encontrado");
         }
 
-        await this.userDatabase.linkUserToInstitution(user.id, instituicaoId);
+        await this.userDatabase.linkUserToInstituicao(user.id, instituicaoId);
     }
 }

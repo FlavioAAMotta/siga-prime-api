@@ -2,7 +2,8 @@
 export enum UserRole {
     ADMIN = "ADMIN",
     USER = "USER",
-    PRECEPTOR = "PRECEPTOR"
+    PRECEPTOR = "PRECEPTOR",
+    COORDENADOR = "COORDENADOR"
 }
 
 export interface User {
@@ -15,6 +16,7 @@ export interface User {
 export interface SignupInputDTO {
     email: string;
     password: string;
+    role?: UserRole;
 }
 
 export interface LoginInputDTO {

@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/FlavioAAMotta/siga-prime-api#readme",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@types/bcrypt": "^6.0.0",
     "@types/knex": "^0.15.2",
     "@types/uuid": "^10.0.0",

@@ -2,10 +2,25 @@ import express from "express";
 import { CoordenadoresController } from "../controller/CoordenadoresController";
 import { CoordenadoresBusiness } from "../business/CoordenadoresBusiness";
 import { CoordenadoresDatabase } from "../data/CoordenadoresDatabase";
+import { UserDatabase } from "../data/UserDatabase";
+import { IdGenerator } from "../services/IdGenerator";
+import { HashManager } from "../services/HashManager";
 
 const coordenadoresRouter = express.Router();
 
-const coordenadoresController = new CoordenadoresController();
+const coordenadoresDatabase = new CoordenadoresDatabase();
+const userDatabase = new UserDatabase();
+const idGenerator = new IdGenerator();
+const hashManager = new HashManager();
+
+const coordenadoresBusiness = new CoordenadoresBusiness(
+    coordenadoresDatabase,
+    userDatabase,
+    idGenerator,
+    hashManager
+);
+
+const coordenadoresController = new CoordenadoresController(coordenadoresBusiness);
 
 /**
  * @openapi

@@ -13,7 +13,7 @@ export class UserBusiness {
     ) { }
 
     public signup = async (input: SignupInputDTO): Promise<void> => {
-        const { email, password } = input;
+        const { email, password, role } = input;
 
         if (!email || !password) {
             throw new Error("Email and password are required");
@@ -35,7 +35,21 @@ export class UserBusiness {
             created_at: new Date()
         });
 
-        await this.userDatabase.insertUserRole(id, UserRole.ADMIN);
+        await this.userDatabase.insertUserRole(id, role || UserRole.ADMIN);
+    }
+
+    public linkUserByEmail = async (email: string, instituicaoId: string): Promise<void> => {
+        if (!email || !instituicaoId) {
+            throw new Error("Email and Institution ID are required");
+        }
+
+        const user = await this.userDatabase.findUserByEmail(email);
+
+        if (!user) {
+            throw new Error("User with this email not found");
+        }
+
+        await this.userDatabase.linkUserToInstituicao(user.id, instituicaoId);
     }
 
     public login = async (input: LoginInputDTO): Promise<string> => {
