@@ -26,7 +26,7 @@ export class InstituicaoController {
             delete queryParams.filters?.limit;
 
             const result = await this.instituicaoBusiness.getAll(queryParams);
-            res.status(200).send(result);
+            res.status(200).send({ data: result });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }
@@ -41,7 +41,7 @@ export class InstituicaoController {
             };
 
             const result = await this.instituicaoBusiness.create(input);
-            res.status(201).send(result);
+            res.status(201).send({ data: result });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }
@@ -57,7 +57,7 @@ export class InstituicaoController {
             };
 
             const result = await this.instituicaoBusiness.update(id, input);
-            res.status(200).send(result);
+            res.status(200).send({ data: result });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }

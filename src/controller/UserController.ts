@@ -58,7 +58,7 @@ export class UserController {
         try {
             const userId = req.params.id as string;
             const institutions = await this.userBusiness.getUserInstitutions(userId);
-            res.status(200).send(institutions);
+            res.status(200).send({ data: institutions });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }

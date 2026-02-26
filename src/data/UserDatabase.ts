@@ -55,7 +55,7 @@ export class UserDatabase {
             .select(
                 "ui.id as vinculo_id",
                 "ui.ativa",
-                "i.id",
+                "i.uuid as id",
                 "i.nome",
                 "i.tipo",
                 "i.ativo"

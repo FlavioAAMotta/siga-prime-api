@@ -10,7 +10,7 @@ export class DashboardController {
         try {
             const instituicaoId = req.headers["x-instituicao-id"] as string | undefined;
             const summary = await this.dashboardBusiness.getSummary(instituicaoId);
-            res.status(200).send(summary);
+            res.status(200).send({ data: summary });
         } catch (error: any) {
             res.status(400).send({ error: error.message });
         }
