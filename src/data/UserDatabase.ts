@@ -55,13 +55,13 @@ export class UserDatabase {
             .select(
                 "ui.id as vinculo_id",
                 "ui.ativa",
-                "i.uuid as id",
+                "i.id as id",
                 "i.nome",
                 "i.tipo",
                 "i.ativo"
             )
             .from("user_instituicao as ui")
-            .join("instituicoes as i", "ui.instituicao_id", "i.uuid")
+            .join("instituicoes as i", "ui.instituicao_id", "i.id")
             .where({ "ui.user_id": userId });
 
         return result;
